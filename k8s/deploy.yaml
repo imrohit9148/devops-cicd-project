@@ -14,6 +14,7 @@ spec:
     spec:
       containers:
       - name: cicd-app
-        image: IMAGE_URI
+        image: 873540495696.dkr.ecr.ap-south-1.amazonaws.com/cicd-app:latest
+        imagePullPolicy: Always  
         ports:
         - containerPort: 5000
