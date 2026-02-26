@@ -1,8 +1,8 @@
 pipeline {
-agent any
+agent any 
 
 ```
-environment {
+envirnment {
     AWS_REGION = "ap-south-1"
     ECR_REPO = "873540495696.dkr.ecr.ap-south-1.amazonaws.com/cicd-app"
     IMAGE_TAG = "latest"
