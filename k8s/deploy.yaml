@@ -12,11 +12,11 @@ spec:
       labels:
         app: cicd
     spec:
+      imagePullSecrets:
+      - name: ecr-secret   # ✅ CORRECT PLACE
       containers:
       - name: cicd-app
         image: 873540495696.dkr.ecr.ap-south-1.amazonaws.com/cicd-app:latest
-        imagePullPolicy: Always 
-        imagePullSecrets:
-        - name: ecr-secret
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
