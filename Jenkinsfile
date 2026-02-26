@@ -16,7 +16,7 @@ pipeline {
 
         stage('Tag Image') {
             steps {
-                sh 'docker tag cicd-app:latest $ECR_REPO:latest'
+                sh 'docker tag cicd-app:${BUILD_NUMBER} $ECR_REPO:latest'
             }
         }
 
@@ -32,7 +32,9 @@ pipeline {
 
         stage('Deploy K8s') {
             steps {
-                sh 'kubectl rollout restart deployment cicd-app'
+		sh 'kubectl apply -f k8s/deploy.yaml'
+		sh 'kubectl apply -f k8s/deploy.yaml'
+		sh 'kubectl rollout restart deployment cicd-app'	
             }
         }
     }
