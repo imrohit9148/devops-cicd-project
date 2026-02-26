@@ -1,52 +1,39 @@
 pipeline {
-agent any 
+    agent any
 
-```
-environment {
-    AWS_REGION = "ap-south-1"
-    ECR_REPO = "873540495696.dkr.ecr.ap-south-1.amazonaws.com/cicd-app"
-    IMAGE_TAG = "latest"
-}
-
-stages {
-
-    stage('Clone') {
-        steps {
-            git 'https://github.com/imrohit9148/devops-cicd-project.git'
-        }
+    environment {
+        ECR_REPO = "873540495696.dkr.ecr.ap-south-1.amazonaws.com/cicd-app"
+        AWS_REGION = "ap-south-1"
     }
 
-    stage('Build Image') {
-        steps {
-            sh 'docker build -t cicd-app .'
-        }
-    }
+    stages {
 
-    stage('Tag Image') {
-        steps {
-            sh 'docker tag cicd-app:latest $ECR_REPO:$IMAGE_TAG'
+        stage('Build Docker') {
+            steps {
+                sh 'docker build -t cicd-app .'
+            }
         }
-    }
 
-    stage('Login to ECR') {
-        steps {
-            sh 'aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 873540495696.dkr.ecr.ap-south-1.amazonaws.com'
+        stage('Tag Image') {
+            steps {
+                sh 'docker tag cicd-app:latest $ECR_REPO:latest'
+            }
         }
-    }
 
-    stage('Push Image') {
-        steps {
-            sh 'docker push $ECR_REPO:$IMAGE_TAG'
+        stage('Push ECR') {
+            steps {
+                sh '''
+                aws ecr get-login-password --region $AWS_REGION | \
+                docker login --username AWS --password-stdin 873540495696.dkr.ecr.ap-south-1.amazonaws.com
+                docker push $ECR_REPO:latest
+                '''
+            }
         }
-    }
 
-    stage('Deploy to K8s') {
-        steps {
-            sh 'kubectl rollout restart deployment cicd-app'
+        stage('Deploy K8s') {
+            steps {
+                sh 'kubectl rollout restart deployment cicd-app'
+            }
         }
     }
 }
-```
-
-}
-
