@@ -39,7 +39,11 @@ pipeline {
         stage('Deploy K8s') {
             steps {
                 sh '''
-                kubectl set image deployment/cicd-app cicd-app=$ECR_REPO:${IMAGE_TAG}
+                kubectl apply -f k8s/deploy.yaml
+                kubectl apply -f k8s/service.yaml
+
+                kubectl set image deployment/cicd-app cicd-app=$ECR_REPO:${IMAGE_TAG} --record
+
                 kubectl rollout status deployment cicd-app
                 '''
             }
